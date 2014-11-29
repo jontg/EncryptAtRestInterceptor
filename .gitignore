@@ -13,4 +13,5 @@ hs_err_pid*
 
 # build stuff
 *.iml
+.idea
 target
