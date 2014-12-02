@@ -4,7 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.mongodb.DB;
-import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 import com.relateiq.CrypterFactory;
 import com.relateiq.annotations.KeyczarReaderFactory;
 import com.relateiq.mongo.EncryptAtRestInterceptor;
@@ -119,7 +119,7 @@ public class MongoModuleForTest extends AbstractModule {
 
     @Provides
     @Singleton
-    Datastore provideDatastore(Morphia morphia, Mongo mongo, @Named("MONGO_DATABASE") String db_name) {
+    Datastore provideDatastore(Morphia morphia, MongoClient mongo, @Named("MONGO_DATABASE") String db_name) {
         DatastoreImpl datastore = new DatastoreImpl(morphia, mongo, db_name);
 
         // Reset-able db
@@ -131,12 +131,11 @@ public class MongoModuleForTest extends AbstractModule {
     @Provides
     @Singleton
     @Named("UnencryptedDataSource")
-    Datastore provideUnencryptedDataStore(Mongo mongo, @Named("MONGO_DATABASE") String mongoDB,
+    Datastore provideUnencryptedDataStore(MongoClient mongo, @Named("MONGO_DATABASE") String mongoDB,
                                           @SuppressWarnings({"unused"}) Datastore ds) throws UnknownHostException {
         // Inject the above datastore even though it is unused.  This is to force the reset mechanism to be initialized.
 
         final Morphia morphia = new Morphia();
-        morphia.mapPackage("dom");
         morphia.getMapper().getOptions().setStoreEmpties(true);
 
         return new DatastoreImpl(morphia, mongo, mongoDB);
@@ -144,8 +143,8 @@ public class MongoModuleForTest extends AbstractModule {
 
     @Provides
     @Singleton
-    Mongo provideMongo(@Named("MONGO_HOST") String mongoHost, @Named("MONGO_PORT") int mongoPort) throws UnknownHostException {
-        return new Mongo(mongoHost, mongoPort);
+    MongoClient provideMongo(@Named("MONGO_HOST") String mongoHost, @Named("MONGO_PORT") int mongoPort) throws UnknownHostException {
+        return new MongoClient(mongoHost, mongoPort);
     }
 
     @Provides
