@@ -25,7 +25,6 @@ import org.mongodb.morphia.mapping.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
@@ -75,7 +74,7 @@ public class EncryptAtRestInterceptor implements EntityInterceptor {
                 .recordStats()
                 .build(new CacheLoader<Class, Optional<Quartet<Class, FieldAccess, String, EncryptionScope>>>() {
                     @Override
-                    public Optional<Quartet<Class, FieldAccess, String, EncryptionScope>> load(@Nonnull Class key) throws Exception {
+                    public Optional<Quartet<Class, FieldAccess, String, EncryptionScope>> load(Class key) throws Exception {
                         FieldAccess fieldAccess = FieldAccess.get(key);
                         for (Field f : key.getDeclaredFields()) {
                             if (f.isAnnotationPresent(EncryptionScope.class)) {
@@ -91,7 +90,7 @@ public class EncryptAtRestInterceptor implements EntityInterceptor {
                 .recordStats()
                 .build(new CacheLoader<Class, List<Triplet<Class, FieldAccess, String>>>() {
                     @Override
-                    public List<Triplet<Class, FieldAccess, String>> load(@Nonnull Class key) throws Exception {
+                    public List<Triplet<Class, FieldAccess, String>> load(Class key) throws Exception {
                         List<Triplet<Class, FieldAccess, String>> fieldAccesses = Lists.newArrayList();
                         FieldAccess fieldAccess = FieldAccess.get(key);
                         for (Field f : key.getDeclaredFields()) {
